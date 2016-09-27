@@ -1,5 +1,6 @@
 package com.company;
 
+import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,32 +35,13 @@ public class Main {
 
                 switch (option) {
                     case "1":
-                        System.out.println("Enter your to-do item:");
-                        String text = scanner.nextLine();
-                        //need to create item object and then add it to items array list
-                        Item item = new Item(text, false);
-                        items.add(item);
+                        addToDo(scanner,items);
                         break;
                     case "2":
-                        System.out.println("Which item do you want to toggle?");
-                        int i = Integer.valueOf(scanner.nextLine());
-                        //need to create new object which to change
-                        Item item2 = items.get(i - 1);
-                        //need to change from false to true or true to false
-                        item2.isDone = !item2.isDone;
+                        toggleToDo(scanner,items);
                         break;
                     case "3":
-                        // to list items you can use for loop have to create new object for the array list but use traditional
-                        for (int j = 0; j < items.size(); j++) {
-                            Item item3 = items.get(j);
-                            int numb = j + 1;
-                            String checkbox = "[ ]";
-                            if (item3.isDone) {
-                                checkbox = "[x]";
-                            }
-                            //System.out.println(checkbox + " " + numb + ". " + item3.text);  string formatting
-                            System.out.printf("%s %s. %s\n", checkbox, numb, item3.text);
-                        }
+                        listToDo(items);
                         break;
                     case "4":
                        keepRunning = false;
@@ -68,6 +50,36 @@ public class Main {
                         System.out.println("Invalid option");
                 }
             }
+        }
+    }
+
+    public static void addToDo(Scanner scanner,ArrayList<Item> items) {
+        System.out.println("Enter your to-do item:");
+        String text = scanner.nextLine();
+        //need to create item object and then add it to items array list
+        Item item = new Item(text, false);
+        items.add(item);
+    }
+
+    public static void toggleToDo(Scanner scanner,ArrayList<Item> items) {
+        System.out.println("Which item do you want to toggle?");
+        int i = Integer.valueOf(scanner.nextLine());
+        //need to create new object which to change
+        Item item2 = items.get(i - 1);
+        //need to change from false to true or true to false
+        item2.isDone = !item2.isDone;
+    }
+
+    public static void listToDo(ArrayList<Item> items) {
+        for (int j = 0; j < items.size(); j++) {
+            Item item3 = items.get(j);
+            int numb = j + 1;
+            String checkbox = "[ ]";
+            if (item3.isDone) {
+                checkbox = "[x]";
+            }
+            //System.out.println(checkbox + " " + numb + ". " + item3.text);  string formatting
+            System.out.printf("%s %s. %s\n", checkbox, numb, item3.text);
         }
     }
 }

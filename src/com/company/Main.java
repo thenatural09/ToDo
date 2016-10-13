@@ -19,6 +19,17 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
+            System.out.println("Enter name");
+            String name = scanner.nextLine();
+            System.out.println("Enter password");
+            String password = scanner.nextLine();
+
+            User user = selectUser(conn,name);
+            if (user == null) {
+                insertUser(conn,name,password);
+            }
+
+
             boolean keepRunning = true;
             while (keepRunning) {
                 System.out.println("1. Create to-do item");
@@ -93,7 +104,8 @@ public class Main {
 
     public static void createTable (Connection conn) throws SQLException {
         Statement stmt = conn.createStatement();
-        stmt.execute("CREATE TABLE IF NOT EXISTS to_dos (id IDENTITY,text VARCHAR,is_done BOOLEAN)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS users(id IDENTITY,name VARCHAR,password VARCHAR)");
+        stmt.execute("CREATE TABLE IF NOT EXISTS to_dos (id IDENTITY,text VARCHAR,is_done BOOLEAN,user_id INT)");
     }
 
     public static void deleteToDo (Connection conn,Scanner scanner) throws SQLException {
@@ -101,6 +113,25 @@ public class Main {
         int i = Integer.valueOf(scanner.nextLine());
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM to_dos WHERE id = ?");
         stmt.setInt(1,i);
+        stmt.execute();
+    }
+
+    public static User selectUser(Connection conn,String name) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE name = ?");
+        stmt.setString(1,name);
+        ResultSet results = stmt.executeQuery();
+        if (results.next()) {
+            int id = results.getInt("id");
+            String password = results.getString("password");
+            return new User(id,name,password);
+        }
+        return null;
+    }
+
+    public static void insertUser(Connection conn,String name,String password) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO users VALUES (null,?,?)");
+        stmt.setString(1,name);
+        stmt.setString(2,password);
         stmt.execute();
     }
 }
